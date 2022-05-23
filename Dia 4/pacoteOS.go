@@ -58,7 +58,6 @@ func main() {
 	if err4 != nil {
 		fmt.Println("Erro na escrita")
 	}
-
 	meuArquivo.Write(minhaString2)
 	meuArquivo.WriteString("\nAdd segunda linha")
 }
