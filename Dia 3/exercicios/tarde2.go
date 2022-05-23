@@ -1,9 +1,12 @@
 package main
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
 type Produto interface {
-	CalcularCusto()
+	CalcularCusto() float32
 }
 
 type Ecommerce interface {
@@ -22,6 +25,7 @@ type loja struct {
 }
 
 func novoProduto(tipo string, nome string, preco float32) produto {
+
 	novoProduto := produto{
 		tipo,
 		nome,
@@ -51,22 +55,27 @@ func (p produto) CalcularCusto() float32 {
 	}
 }
 
-func (l loja) Total() float32{
+func (l loja) Total() float32 {
 	var total float32 = 0.0
-	for _, v := range l.Produtos{
+	for _, v := range l.Produtos {
 		total = total + v.Preco + v.CalcularCusto()
 	}
 	return total
 }
 
-func (l *loja) Adicionar(p produto){
-	l.Produtos = append(l.Produtos, p)
+func (l *loja) Adicionar(p Produto) error {
+	prod, ok := p.(produto)
+	if ok == false {
+		return errors.New("Tipo inválido")
+	}
+	l.Produtos = append(l.Produtos, prod)
+	return nil
 }
 
 func main() {
-	p1 := novoProduto("p", "mouse",10.00)
-	p2 := novoProduto("m", "monitor",100.00)
-	p3 := novoProduto("g", "CPU",100.00)
+	p1 := novoProduto("p", "mouse", 10.00)
+	p2 := novoProduto("m", "monitor", 100.00)
+	p3 := novoProduto("g", "CPU", 100.00)
 	l1 := novaLoja(p1, p2)
 
 	fmt.Println(l1.Total())
